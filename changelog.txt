@@ -1,0 +1,2 @@
+01-03-2026 : Opdatering til understøttelse af QGIS4 og QT6
+01-03-2026 : Udskiftning af login-flow. Tildingere benyttedes et .Net login flow, nu er login udelukkende python

@@ -3,19 +3,35 @@
 </br>
 </br>
 
-# Brugervejledning til QGIS DMP Manager – ET QGIS baseret plugin til håndtering og redigering af data fra Miljøportalen
+# Brugervejledning til QGIS DMP Manager - ET QGIS baseret plugin til håndtering og redigering af data fra Miljøportalen
 
 ## Indledning
 
-QGIS DMP Manager er et plugin, som giver brugeren mulighed for at downloade valgfri datalag fra DAI, Miljøportalen. Data placeres i en lokal database baseret datakilde i form en tabel. Modtager databasen kan være af typen PostgreSQL eller GeoPackage.  Download funktionen medfører, at der oprettes to tabeller for hvert data-lag, som hentes fra DAI: Et ”redigeringslag”, som brugeren kan rette i, dvs. oprette nye samt modificere eller slette eksisterende poster. Samtidigt oprettes en ”referencelag” i samme database hvor referencelaget struktur- og datamæssigt er fuldkommen ens med redigeringslaget (før brugeren begynder at rette data) - blot under et andet tabelnavn.
-Redigeringslaget er et helt almindeligt data-lag i QGIS og du kan derfor benytte alle QGIS’s avancerede redigeringsfunktioner på dette lag. (Du må ikke rette i referencelaget, da man fjerner muligheden for plugin-et senere kan sammenligne dataindhold i redigeringslag og referencelag.)
-Man kan downloade flere typer af data-lag fra DAI, således at disse lag findes samtidigt som redigerings/referencelag i QGIS. Dette giver mulighed for at tilrette data på tværs af forskellige data-lag fra DAI. 
-Når tilretning er færdiggjort i redigeringslaget kan brugeren sammenligne data mellem redigeringslag og referencelag vha. en funktion i plugin-et. Funktionen finder alle forskelle redigerings- og referencelag (oprettelser, rettelser og sletninger) og viser disse som lag, hhv. ”Oprettet”, ”Rettet” eller ”Slettet” i QGIS kortvinduet. Brugeren kan herefter kontrollere de enkelte modificerede elementer og ”skubbe” (uploade) modifikationerne tilbage til DAI.
-Plugin-et har mulighed for at gemme en tematisering (symbolisering) for hver DAI lagtype, således at samme tematisering vil blive benytte ved senere downloads af data-lag fra DAI. 
-Plugin-et har slutteligt en række administrative funktioner, f.eks. kunne opstarte QGIS geometri-tjekker på det valgte lag.
-Plugin-et kan benyttes til både demo-miljøet og produktionsmiljøet hos DAI, Miljøportalen.    
-NB! Denne vejledning er skrevet til den engelske udgave af DMP Manager. 
-Men brugervejledningen indeholder de danske oversættelser i parenteser () umiddelbart efter de engelske betegnelser.
+QGIS DMP Manager er et plugin, som gør det muligt at downloade valgfri datalag fra DAI, Miljøportalen.
+
+Data placeres i en lokal databasebaseret datakilde som tabeller. Modtagerdatabasen kan være PostgreSQL eller GeoPackage.
+
+Ved Download oprettes der to tabeller for hvert datalag:
+
+1. Et redigeringslag, hvor brugeren kan oprette, rette og slette poster.
+2. Et referencelag, som er en kopi af data ved hentetidspunktet.
+
+Redigeringslaget er et almindeligt data-lag i QGIS, så du kan bruge QGIS's redigeringsfunktioner direkte.
+
+Du må ikke redigere i referencelaget, fordi plugin'et bruger det til senere sammenligning mellem redigeringslag og referencelag.
+
+Du kan downloade flere datalag fra DAI i samme QGIS-projekt og redigere på tværs af lag.
+
+Når redigering er færdig, kan plugin'et sammenligne redigeringslag og referencelag. Forskelle vises som lagene Oprettet, Rettet og Slettet i QGIS-kortvinduet. Derefter kan du kontrollere hvert element og skubbe (uploade) ændringer tilbage til DAI.
+
+Plugin'et kan også gemme tematisering (symbolisering) for hver DAI-lagtype, så samme tematisering bruges ved senere downloads.
+
+Plugin'et indeholder desuden administrative funktioner, fx opstart af QGIS geometri-tjekker.
+
+Plugin'et kan bruges mod både demo-miljøet og produktionsmiljøet hos DAI, Miljøportalen.
+
+NB! Vejledningen er skrevet til den engelske udgave af DMP Manager.
+De danske oversættelser står i parentes () umiddelbart efter de engelske betegnelser.
 
 ## Installation
 
@@ -23,145 +39,173 @@ Men brugervejledningen indeholder de danske oversættelser i parenteser () umidd
 
 Installation af plugin plus hjælpeprogram er beskrevet i en separat vejledning, som findes i samme GitHub repository: https://github.com/septima/DMP-MANAGER-DISTRIBUTION
 
-## Opstart af Plugin
+## Opstart af plugin
 
-DMP Manager kan startes ved at klikke på menupunkt ”Web” -> ”DMP Manager” -> ”Dmp Manager”. Eller at ved at klikke på følgende ikon:
+DMP Manager startes via menupunkt Web -> DMP Manager -> DMP Manager.
+
+Du kan også starte plugin'et via følgende ikon:
 
 ![header](img/icon.png)
 
-Herefter vises Brugerdialogen for DMP Manager – normalt placeret i højre side af QGIS’s hoved skærmbillede:
+Herefter vises Brugerdialogen for DMP Manager - normalt placeret i højre side af QGIS's hovedskærmbillede:
 
 ![header](img/dialog.png)
 
-## Initiel opsætning af DMP Manager.
+## Initiel opsætning af DMP Manager
 
 Før du kan bruge DMP Manager skal du foretage nogle få opsætninger i faneblad ”Administration”:
 
 ![header](img/administration.png)
 
-* I afsnit ”Administration” kan du sætte en række informationer.
+Gennemfør opsætningen punkt for punkt i afsnittene nedenfor.
 
-    * I valgfeltet CVR number (CVR nummer) vælges CVR nummeret for en bestemt virksomhed / institution ved at vælge firmaets / institutionens navn . Dette CVR nummer kan benyttes som en filterværdi, således man kun downloader objekter fra DMP med det valgte CVR Nummer.
-    NB! Nummeret vil også automatisk tilføjes alle nyoprettede objekter lokalt i QGIS. Men ved upload af data vil Miljøportalens datasystemer automatisk indsætte et (evt. andet) CVR nummer værdi fastlagt ud fra brugerens brugernavn og tilhørsforhold ved login til Miljøportalen. Dette gælder for størstedelen af  de forskellige datalag. 
-    * Ved tryk på knap: Set layer choice in tab ”fetch” as preferred (Sæt datatype valg som foretrukkent) vil plugin finde hvilke lagtype, som er valgt til download i faneblad Fetch (Hent data) og sørge for, at dette lag er valgt på forhånd ved senere opstarter af plugin.
-◦	Ved tryk på knap: Reset administrative data from DMP (Genindlæs administrative oplysninger fra DMP) udfører plugin en genindlæsning af en række administrative oplysninger fra Miljøportalen. Plugin’et er fra start installeret med et sæt af disse oplysninger, så det er ikke umiddelbart nødvendigt at udføre funktionen.  Men Miljøportalen vil løbende ændre på dette datasæt, så hvis man begynder at opleve driftsfejl kan man muligvis udbedre disse fejl ved at trykke på knappen.
+* I afsnit Administration kan du sætte en række informationer.
 
-* Under afsnit Placement of edit and reference data (Placering af redigerings- og referencelag) skal du vha. drop-down boks “Database” vælge hvilken database du ønsker at DAI data til redigering skal placeres i. Drop-down listen viser alle database dataforbindelser der er opsat i QGIS under ”Open data source manager  (CTRL-L)”  (”Åbn Datakilde-håndtering  (CTRL-L)”). Hvis din database ikke findes i listen, skal du først oprette dataforbindelsen vha. førnavnte standard QGIS funktion.
-Efter valg af database udfyldes drop-down boks Schema automatisk med alle tilgængelige schemaer i den valgte database. Hvis databasetypen ikke benytter sig af schema begrebet, forbliver drop-down listen tom og vil være inaktiv.
-    * Hvis du ønsker at lave et nyt schema til dine data i databasen kan du trykke på den smalle knap umiddelbart til højre for drop-down boks Schema. Denne vil give dig mulighed for at lave et nyt, tomt schema til dine data (Hvis du har rettigheder til dette i den valgte database).
-    * I tekst-felt Primary key name (Navn for primær nøgle) kan du endvidere indtaste navnet på det felt (kolonne) i redigerings og referencelag, som vil komme til at indeholde den for QGIS interne unikke nøgle (primary key). Navnet er forskelligt fra database system til databasesystem, men vil normalt sættes til id for Postgres database kilder og fid for GeoPackage datafiler. 
-    * I tekst-felt Primary key quote (Tekst adskiller) kan du indtaste karakteren for en tekstafgrænser for den valgte databasetype hvis din primary key er af typen tekst. Tekstafgrænser er normalt en apostrof (’). Ellers skal du efterlade feltet tomt.
+    * I valgfeltet CVR number (CVR nummer) vælges CVR-nummeret for en bestemt virksomhed/institution ved at vælge firmaets/institutionens navn. Dette CVR-nummer kan bruges som filterværdi, så der kun downloades objekter fra DMP med det valgte CVR-nummer.
+    NB! Nummeret tilføjes også automatisk til nyoprettede objekter lokalt i QGIS. Ved upload kan Miljøportalens datasystemer dog automatisk indsætte et evt. andet CVR-nummer ud fra brugerens login og tilhørsforhold. Dette gælder for størstedelen af datalagene.
+    * Ved tryk på knap Set layer choice in tab Fetch as preferred (Sæt datatypevalg som foretrukkent) finder plugin'et den lagtype, som er valgt i faneblad Fetch (Hent data), og gør den til standard ved senere opstarter.
+    * Ved tryk på knap Reset administrative data from DMP (Genindlæs administrative oplysninger fra DMP) genindlæser plugin'et administrative oplysninger fra Miljøportalen. Plugin'et installeres med et standardsæt af disse oplysninger, så funktionen er normalt ikke nødvendig. Hvis der opstår driftsfejl, kan en genindlæsning ofte afhjælpe problemet.
+
+* Under afsnit Placement of edit and reference data (Placering af redigerings- og referencelag) skal du i drop-down boksen Database vælge, hvilken database DAI-data til redigering skal placeres i. Drop-down listen viser alle databaseforbindelser, der er opsat i QGIS under Open data source manager (CTRL-L) (Åbn Datakilde-håndtering (CTRL-L)). Hvis din database ikke findes i listen, skal du først oprette forbindelsen via denne QGIS-funktion.
+Efter valg af database udfyldes drop-down boksen Schema automatisk med tilgængelige schemaer i den valgte database. Hvis databasetypen ikke bruger schema-begrebet, forbliver listen tom og inaktiv.
+    * Hvis du ønsker at lave et nyt schema til dine data i databasen, kan du trykke på den smalle knap umiddelbart til højre for drop-down boksen Schema. Denne giver dig mulighed for at lave et nyt, tomt schema til dine data (hvis du har rettigheder til dette i den valgte database).
+    * I tekst-felt Primary key name (Navn for primær nøgle) kan du indtaste navnet på det felt (kolonne) i redigerings- og referencelag, som vil indeholde den interne unikke nøgle (primary key) for QGIS. Navnet er forskelligt fra databasesystem til databasesystem, men vil normalt sættes til id for Postgres-databasekilder og fid for GeoPackage-datafiler.
+    * I tekst-felt Primary key quote (Tekst adskiller) kan du indtaste karakteren for en tekstafgrænser for den valgte databasetype, hvis din primary key er af typen tekst. Tekstafgrænser er normalt en apostrof ('). Ellers skal du efterlade feltet tomt.
 Det er yderst sjældent at feltet skal være andet end tomt.
 
-* I afsnit Environment (Data miljø)  kan du vælge om du skal arbejde mod test Miljøportalens demo miljø eller produktions miljø.
-Ved skift af data miljø – fra Demo til Produktion eller vice-versa – Vil du blive advaret om, at QGIS skal genstartes føres skiftet fungerer. Du risikerer endvidere at skulle vente op mod en time på at en evt. allerede gennemført logon timer ud, før du kan logge på det nye data miljø. 
-    * Hvis du fortsætter med skiftet, bliver data-miljø skiftet permanent og QGIS bliver lukket ned. Vherefter vil QGIS benytte det valgte data-miljø
-(Note: Grunden til forsinkelsen på en time er, at det ikke har været muligt at få ”logoff” til Miljøportalen til at fungere inde fra plugin’et. Så  man må vente på, at Milportalens automatiske logoff foretages efter en time) 
+* I afsnit Environment (Data miljø) kan du vælge, om du vil arbejde mod Miljøportalens demo-miljø eller produktionsmiljø.
+Ved skift af data-miljø fra Demo til Produktion eller omvendt bliver du advaret om, at QGIS skal genstartes, før skiftet virker. Du kan desuden skulle vente op mod en time, hvis en allerede gennemført logon endnu ikke er udløbet.
+    * Hvis du fortsætter, bliver data-miljøet skiftet permanent, og QGIS lukkes ned. Herefter benytter QGIS det valgte data-miljø.
+(Note: Grunden til forsinkelsen på en time er, at det ikke har været muligt at få logoff til Miljøportalen til at fungere inde fra plugin'et. Derfor må man vente, til Miljøportalens automatiske logoff sker efter ca. en time.)
 
-Når alle relevante parametre i fanebladet er værdisat, trykkes der på knap Save as default (Gem opsætninger). Dette vil gemme alle valg og indtastninger som den nye opsætning. 
-Hvis man har lavet en række (evt. fejlagtige) valg eller indtastninger kan man genindlæse de oprindelige oplysninger for plugin’et ved at trykke på knap Reset to default (Genindlæs opsætninger). 
+Når alle relevante parametre i fanebladet er værdisat, trykkes der på knap Save as default (Gem opsætninger). Dette gemmer alle valg og indtastninger som den nye opsætning.
+Hvis man har lavet en række (evt. fejlagtige) valg eller indtastninger, kan man genindlæse de oprindelige oplysninger for plugin'et ved at trykke på knap Reset to default (Genindlæs opsætninger).
 NB! Når man først har trykket på Save as default (Gem opsætninger) knappen kan man ikke genindlæse de oprindelige oplysninger.
  
 ## Dagligt arbejde med DMP Manager  
 
-Det daglige arbejde med DMP Manager følger – i store træk – følgende cyklus.
+Det daglige arbejde med DMP Manager følger i store træk denne cyklus:
 1.	Bruger indlæser et eller flere lag fra Miljøportalen. Disse lag indsættes automatisk som tabeller i databasen og tabellerne vises automatisk i QGIS’s kortvindue.
 
 ![header](img/main.png)
 
-2.	Bruger redigerer de indlæste data med QGIS’s indbyggede redigeringsværktøjer. Redigering- sessionen kan strække sig over flere dage og/eller nedlukninger af QGIS ved at gemme opsætningen som et QGIS-projekt og indlæse dette projekt ved genopstart af QGIS.
+2.	Bruger redigerer de indlæste data med QGIS's indbyggede redigeringsværktøjer. Redigeringssessionen kan strække sig over flere dage og/eller nedlukninger af QGIS ved at gemme opsætningen som et QGIS-projekt og indlæse projektet ved genopstart.
 
-3.	Når bruger er klar til at skubbe rettelser tilbage til Miljøportalen benyttes DMP Managers værktøjer til at kontrollere / sammenligne redigerede og oprindelige data og derefter skrives data til Miljøportalen eller forkastes én efter én. 
+3.	Når bruger er klar til at skubbe rettelser tilbage til Miljøportalen, benyttes DMP Managers værktøjer til at kontrollere/sammenligne redigerede og oprindelige data. Derefter kan ændringer skrives til Miljøportalen eller forkastes én efter én.
 
 ![header](img/flow.png)
 
-Workflow gentages med andre / nye områder / temaer  
+Workflow gentages med andre/nye områder/temaer.
 
 Ovenstående workflow understøttes af 2 faneblade i DMP Manager:
 
 ### Faneblad Fetch (Hent data)
 
-Faneblad Fetch (Hent data) benyttes til at downloade data fra Miljøportalen
+Faneblad Fetch (Hent data) benyttes til at downloade data fra Miljøportalen.
 
-For at downloade data fra Miljøportalen skal man først foretage et login til portalen. Det gøres ved at trykke på knap Login to DMP (Login til Miljøportalen). 
+For at downloade data fra Miljøportalen skal man først foretage login til portalen. Det gøres ved at trykke på knap Login to DMP (Login til Miljøportalen).
 QGIS har i mellemtiden modtaget de nødvendige oplysninger til kommunikation med Miljøportalen for at hente og opdatere data.
-Resultatet kan aflæses ved at tekstfelterne Acces token (Adgangs nøgle) og Token timeout (Nøgle udløber) udfyldes med information fra Miljøportalen.
-NB! Disse felter kan redigeres, men dette gøres kun i forbindelse med test af nye opsætninger (Så lad være med det!)
-NBB! Det er faktisk ikke strengt nødvendigt at trykke på knap Login to DMP (Login til Miljøportalen) - Hvis du begynder at hente data uden at have foretaget et login, vil DMP Manager detektere denne situation, og automatisk starte en login-proces før download fa data fra Miljøportalen gennemføres. 
-Samme forhold gør sig også gældende, hvis login bliver ugyldigt pga. tidsudløb. 
+Resultatet kan aflæses ved, at tekstfelterne Access token (Adgangs nøgle) og Token timeout (Nøgle udløber) udfyldes med information fra Miljøportalen.
+NB! Disse felter kan redigeres, men dette gøres kun i forbindelse med test af nye opsætninger (så lad være med det!).
+NB! Det er ikke strengt nødvendigt at trykke på knap Login to DMP (Login til Miljøportalen). Hvis du begynder at hente data uden at være logget ind, detekterer DMP Manager situationen og starter automatisk en login-proces, før download af data gennemføres.
+Samme forhold gør sig også gældende, hvis login bliver ugyldigt pga. tidsudløb.
+
+Operationelt forløb:
+
+1. Tryk Login to DMP (Login til Miljøportalen).
+2. Kontroller at felterne Access token og Token timeout udfyldes.
+3. Fortsæt med datahentning.
+
+Hvis du springer trin 1 over, starter plugin'et normalt login automatisk ved første Download.
 
 #### Hente data fra Miljøportalen
 
-For at hente data fra Miljøportalen bruges afsnit Fetch layer from DMP (Hent lag fra Miljøportalen) i faneblad Fetch (Hent data). Øverst i dette afsnit findes der en drop-down liste med kode-nr. og navn på alle de lag, som kan hentes. 
-Vha. denne drop-down liste vælger hvilket lag, du ønsker at hente.
-Dernæst kan du sætte ”flueben” i felt Use mapper extent af datafilter (Benyt kortvindue som datafilter) hvis du kun ønsker at hente data i den valgte lagtype, som ligger indenfor det kortudsnit der pt. vises i QGIS. Hvis du derimod ønsker data fra hele landet efterlades boksen uden flueben.
-Dernæst sættes der flueben i boks Overwrite existing DMP layer (Overskriv eksisterende DMP lag), hvis du ønsker at overskrive evt. eksisterende data i databasen fra tidligere download sessioner. Hvis der ikke er sat flueben i boksen og databasen indeholder eksisterende data i den relevante tabel, vises en fejlmeddelelse og der hentes ikke nye data fra Miljøportalen.   
-Slutteligt kan der sættes flueben i felt Use CVR number af filter (Brug CVR nummer som filter) hvis du kun vil hente data fra Miljøportalen med ét bestemt CVR nummer. Dette nummer skal først du indtaste i faneblad Administration  (Administration) , felt CVR Number (CVR nummer).
-Selve hentning af data igangsættes ved tryk på knap Download (Hent data). 
-NB! Det er ikke kun data fra selve laget, som hentes. Det er også opslagsdata, som indlæses som separate tabeller og vises i QGIS lagviser.
-Hele processen med at hente data kan gentages med et vilkårligt antal forskellige data-lag fra Miljøportalen således mange forskellige lag kan redigeres i samme QGIS-projekt.
+For at hente data fra Miljøportalen bruges afsnit Fetch layer from DMP (Hent lag fra Miljøportalen) i faneblad Fetch (Hent data).
+
+Operationelt forløb:
+
+1. Vælg lag i drop-down listen med kode-nr. og navn.
+2. Sæt evt. flueben i Use map extent as data filter (Benyt kortvindue som datafilter), hvis du kun vil hente data i aktuelt kortudsnit.
+3. Sæt evt. flueben i Overwrite existing DMP layer (Overskriv eksisterende DMP lag), hvis tidligere data i databasen skal overskrives.
+4. Sæt evt. flueben i Use CVR number as filter (Brug CVR nummer som filter), hvis der skal filtreres på CVR Number (CVR nummer).
+5. Tryk Download (Hent data).
+
+NB! Hvis Overwrite existing DMP layer ikke er markeret, og tabellen allerede indeholder data, vises en fejlmeddelelse, og der hentes ikke nye data.
+
+NB! Der hentes både lagdata og opslagsdata (som separate tabeller i QGIS-lagviser).
+
+Processen kan gentages for flere data-lag i samme QGIS-projekt.
 
 ### Faneblad Checks (Data tjek)
 
-Faneblad Checks (Data tjek) benyttes til kontrol af modificerede data samt upload af disse data til Miljøportalen. 
+Faneblad Checks (Data tjek) benyttes til kontrol af modificerede data samt upload af disse data til Miljøportalen.
 
 ![header](img/check.png)
 
-For at udføre en kontrol af redigerede data (som også er en forberedelse til at kunne uploade modificerede data til Miljøportalen vælges først hvilket lag, som skal kontrolleres ved hjælp af drop-down boks i afsnit Choose layer (Vælg lag)
-NB! For at alle modifikationer bliver vist ved kontrollen skal man først have gemt sine rettelser i databasen ved at hoppe ud af redigerings modus i QGIS (”Blyanten” skal være ”grået ud” for redigeringslaget)
-Dernæst trykkes der på knap Compare (Sammenlign) i afsnit Compare edit and reference layer (Sammenlign redigerings- og referencelag).
-Dette starter en proces i plugin, som finder alle nyindsatte elementer, alle rettede elementer og alle slettede elementer i det valgte redigeringslag. Disse oplysninger viser 2 steder:
+For at udføre kontrol af redigerede data (forberedelse til upload) bruges følgende forløb:
 
-1.	I QGIS kortvinduet som 3 nye lag: ”Oprettede elementer”, ”Slettede elementer” og ”Rettede elementer” i laggruppe ”Miljøportalen” -> ”rettede data”. 
+1. Vælg lag i drop-down boksen under Choose layer (Vælg lag).
+2. Gem rettelser ved at gå ud af redigeringsmodus i QGIS (blyanten skal være grået ud).
+3. Tryk Compare (Sammenlign) i afsnit Compare edit and reference layer (Sammenlign redigerings- og referencelag).
 
-2.	I faneblad Checks (Hent data), afsnit Compare edit and reference layer (Sammenlign redigerings- og referencelag) udfyldes der en 3-grenet liste med de samme data.
+Dette starter en proces i plugin'et, som finder nyindsatte, rettede og slettede elementer i det valgte redigeringslag. Oplysningerne vises 2 steder:
+
+1.	I QGIS-kortvinduet som 3 nye lag: "Oprettede elementer", "Slettede elementer" og "Rettede elementer" i laggruppe "Miljøportalen" -> "rettede data".
+
+2.	I faneblad Checks (Data tjek), afsnit Compare edit and reference layer (Sammenlign redigerings- og referencelag), udfyldes en 3-grenet liste med de samme data.
 
 ![header](img/check2.png)
 
-Ved udfoldning af listen kan man undersøge de enkelte modificerede data. 
+Ved udfoldning af listen kan man undersøge de enkelte modificerede data.
 Ved højreklik på de enkelte elementer vises en under-menu, som giver dig mulighed for at foretage en række handlinger på elementet.
 
 ![header](img/compare.png)
 
-* Cancel modification (Tilbagefør rettelse):  Det valgte element føres tilbage til sin oprindelige tilstand: Slettede elementer genindsættes, Rettede elementer føres tilbage til sine oprindelige værdier/geometri og oprettede elementer fjernes.
+* Cancel modification (Tilbagefør rettelse): Det valgte element føres tilbage til sin oprindelige tilstand: Slettede elementer genindsættes, Rettede elementer føres tilbage til sine oprindelige værdier/geometri, og oprettede elementer fjernes.
 
-* Upload modification (Skub rettelse til DMP): Modifikation
-en af det enkelte element skubbes tilbage til Miljøportalen. Hvis modifikationen godkendes af Miljøportalen tilpasses både redigeringslag og reference-lag således at elementet får samme udseende/værdisætning, som elementet nu har i Miljøportalen. 
-Hvis upload til Miljøportalen gennemføres uden fejl bliver det enkelte element i listen gjort inaktiv, så der ikke kan foretages flere handlinger på det.
+* Upload modification (Skub rettelse til DMP): Modifikationen af det enkelte element skubbes tilbage til Miljøportalen. Hvis modifikationen godkendes, tilpasses både redigeringslag og reference-lag, så elementet får samme udseende/værdisætning som i Miljøportalen.
+Hvis upload gennemføres uden fejl, bliver elementet i listen gjort inaktivt, så der ikke kan foretages flere handlinger på det.
 
 * Show DMP error (Vis sidste DMP fejl): Viser sidste fejlmeddelelse fra Miljøportalen, hvis skrivning af elementet til Miljøportalen fejlede.
 
-* Zoom/pan to feature (Zoom / panorér til element): Kortvindue zoomes / flyttes, således at det relevante element vises tydeligt i kortvinduet
+* Zoom/pan to feature (Zoom / panorér til element): Kortvinduet zoomes/flyttes, så det relevante element vises tydeligt.
 
-Ved at bruge ovenstående funktioner på hvert enkelt modificeret element kan alle modificerede elementer  skrives til Miljøportalen.
+Ved at bruge ovenstående funktioner på hvert enkelt modificeret element kan alle modificerede elementer skrives til Miljøportalen.
 
-Der er tre inaktive knapper placeret umiddelbart over sammenligningstræet. Disse bliver aktive, når der gennemføres en sammenligning. Knapperne benyttes til ved masse opdatering af ændrede data til Miljøportalen.  
-Ud for hver objekt id i sammenligningstræet er der et afkrydsningsfelt, som bestemmer, om et objekt omfattes af en masse opdatering. Dette felt kan sættes manuelt. 
+Kort arbejdsmåde i praksis:
 
-Alternativt kan man afkrydse samtlige poster i sammenlignings træet ved at trykke på knap  Check All (Sæt alle krydser). Alle satte krydser kan fjernes ved at trykke på knap  Uncheck All (Fjern alle krydser).
-Slutteligt kan selve masse upload af rettelser til Miljøportalen gennemføres ved at trykke på knap  Upload Checked (Skub alle afkrydsede) .  Masseupload svarer til, at man for hver afkrydset objekt havde højreklikket på objektid og valgt funktion Upload modification (Skub rettelse til DMP)
+1. Udfør Compare.
+2. Gennemgå elementer i træet.
+3. Brug Cancel modification eller Upload modification pr. element.
+4. Brug evt. masseupload med Check All/Uncheck All/Upload Checked.
 
-Ved tryk på knap Clear (Nulstil) i afsnit Compare edit and reference layer  (Sammenlign redigerings- og referencelag) fjernes kontrol lag fra kortvinduet og listevinduet nulstilles. 
+Der er tre inaktive knapper placeret umiddelbart over sammenligningstræet. Disse bliver aktive, når der gennemføres en sammenligning. Knapperne bruges til masseopdatering af ændrede data til Miljøportalen.
+Ud for hvert objekt-id i sammenligningstræet er der et afkrydsningsfelt, som bestemmer, om objektet omfattes af en masseopdatering. Dette felt kan sættes manuelt.
 
-Afsnit Actions (Aktioner) indeholder 2 trykknapper, som igangsætter forskellige funktioner
-* Geometry check (Geometri tjekt)
-Opstarter QGIS’s indbyggede geometritjekker på det valgte lag under Choose layer (Vælg lag)
+Alternativt kan man afkrydse samtlige poster i sammenligningstræet ved at trykke på knap Check All (Sæt alle krydser). Alle satte krydser kan fjernes ved at trykke på knap Uncheck All (Fjern alle krydser).
+Slutteligt kan selve masseupload af rettelser til Miljøportalen gennemføres ved at trykke på knap Upload Checked (Skub alle afkrydsede). Masseupload svarer til, at du for hvert afkrydset objekt højreklikker på objekt-id og vælger Upload modification (Skub rettelse til DMP).
+
+Ved tryk på knap Clear (Nulstil) i afsnit Compare edit and reference layer (Sammenlign redigerings- og referencelag) fjernes kontrollag fra kortvinduet, og listevinduet nulstilles.
+
+Afsnit Actions (Aktioner) indeholder 2 trykknapper, som igangsætter forskellige funktioner.
+* Geometry check (Geometri tjek)
+Opstarter QGIS's indbyggede geometritjekker på det valgte lag under Choose layer (Vælg lag).
 * Multipart to singlepart (Multipart til singlepart)
-Opstarter en funktion, som gennemløber selekterede objekter i det valgte lag under Choose layer (Vælg lag). Hvert undersøgt objekt, som består af flere delobjekter vil blive konverteret til 2 eller flere objekter med samme attributværdi som originalen. Det første nye objekt har samme objekt-id og version-id, som det originale objekt.
+Opstarter en funktion, som gennemløber selekterede objekter i det valgte lag under Choose layer (Vælg lag). Hvert undersøgt objekt, som består af flere delobjekter, konverteres til 2 eller flere objekter med samme attributværdi som originalen. Det første nye objekt har samme objekt-id og version-id som det originale objekt.
 
-Der er to krav for at bruge denne funktion
-1.	Laget må ikke være i redigerings modus, dvs. med ”blyanten” aktiveret.
-2.	Der skal være etableret en selektion af objekter, der skal behandles. Selektionen kan laves via alle selektions metoder i QGIS.  
+Der er to krav for at bruge denne funktion:
+1.	Laget må ikke være i redigeringsmodus, dvs. med "blyanten" aktiveret.
+2.	Der skal være etableret en selektion af objekter, der skal behandles. Selektionen kan laves via alle selektionsmetoder i QGIS.
 
 ## Automatisk tematisering af hentede lag fra Miljøportalen
 
-Plugin-et har mulighed for at automatisk tematisere hentede lag. Dette gøres på følgende måde:
-1.	Hent et lag fra Miljøportalen. Første gang du henter det, vil det optræde med en simpel farvelægning valgt vilkårligt ag QGIS
+Plugin'et har mulighed for automatisk at tematisere hentede lag. Dette gøres på følgende måde:
+1.	Hent et lag fra Miljøportalen. Første gang du henter det, vil det optræde med en simpel farvelægning valgt vilkårligt af QGIS.
 
-2.	Du tematiserer så kort-laget vha. den indbyggede symbologi-funktion i QGIS. Du kan bruge alle faciliteter i denne, inkl. opsætning af felter med lookup funktioner osv.
+2.	Du tematiserer kort-laget vha. den indbyggede symbologi-funktion i QGIS. Du kan bruge alle faciliteter i denne, inkl. opsætning af felter med lookup-funktioner osv.
 
 ![header](img/style.png)
 
 3.	Herefter går du ind i faneblad Administration (Administration), afsnit Save layer as default (Gem lag symbologi som standard), hvor du i Layer Name (Lag navn) vælger laget, du vil gemme symbologi for og slutteligt trykker på Save (Gem).
 
-Herefter vil det valgte lag automatisk blive tematiseret, hver gang du downnloader dette lag fra Miljøportalen.
+Herefter vil det valgte lag automatisk blive tematiseret, hver gang du downloader dette lag fra Miljøportalen.
